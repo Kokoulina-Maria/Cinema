@@ -202,7 +202,7 @@ namespace Cinema
                         Booking t = new Booking();
                         t.Seat = db.SeatSet.Find(d.ID);
                         db.BookingSet.Add(t);
-                        db.SeatSet.Find(d.ID).State = "Забронировано";
+                        db.SeatSet.Find(d.ID).State = "Забронировано";//
                         db.SaveChanges();
                         book = book + " " + db.SeatSet.Find(d.ID).Booking.Number.ToString();
                     }
