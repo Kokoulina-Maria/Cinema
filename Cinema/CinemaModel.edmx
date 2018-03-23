@@ -1,0 +1,532 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="CinemaModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="CinemaModelStoreContainer">
+    <EntitySet Name="CinemaSet" EntityType="CinemaModel.Store.CinemaSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="FilmSet" EntityType="CinemaModel.Store.FilmSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="SessionSet" EntityType="CinemaModel.Store.SessionSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="HallSet" EntityType="CinemaModel.Store.HallSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="СashierSet" EntityType="CinemaModel.Store.СashierSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="SeatSet" EntityType="CinemaModel.Store.SeatSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TicketSet" EntityType="CinemaModel.Store.TicketSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="BookingSet" EntityType="CinemaModel.Store.BookingSet" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="CinemaHall" Association="CinemaModel.Store.CinemaHall">
+      <End Role="Cinema" EntitySet="CinemaSet" />
+      <End Role="Hall" EntitySet="HallSet" />
+    </AssociationSet>
+    <AssociationSet Name="CinemaСashier" Association="CinemaModel.Store.CinemaСashier">
+      <End Role="Cinema" EntitySet="CinemaSet" />
+      <End Role="Сashier" EntitySet="СashierSet" />
+    </AssociationSet>
+    <AssociationSet Name="FilmSession" Association="CinemaModel.Store.FilmSession">
+      <End Role="Film" EntitySet="FilmSet" />
+      <End Role="Session" EntitySet="SessionSet" />
+    </AssociationSet>
+    <AssociationSet Name="SessionSeat" Association="CinemaModel.Store.SessionSeat">
+      <End Role="Session" EntitySet="SessionSet" />
+      <End Role="Seat" EntitySet="SeatSet" />
+    </AssociationSet>
+    <AssociationSet Name="SeatTicket" Association="CinemaModel.Store.SeatTicket">
+      <End Role="Seat" EntitySet="SeatSet" />
+      <End Role="Ticket" EntitySet="TicketSet" />
+    </AssociationSet>
+    <AssociationSet Name="SeatBooking" Association="CinemaModel.Store.SeatBooking">
+      <End Role="Seat" EntitySet="SeatSet" />
+      <End Role="Booking" EntitySet="BookingSet" />
+    </AssociationSet>
+    <AssociationSet Name="HallSession" Association="CinemaModel.Store.HallSession">
+      <End Role="Hall" EntitySet="HallSet" />
+      <End Role="Session" EntitySet="SessionSet" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="CinemaSet">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="Adress" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="City" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Deleted" Type="bit" Nullable="false" />
+    <Property Name="ID" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FilmSet">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Year" Type="smallint" Nullable="false" />
+    <Property Name="length" Type="time" Nullable="false" />
+    <Property Name="AgeLimit" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Producer" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ID" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Poster" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SessionSet">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="Date" Type="datetime" Nullable="false" />
+    <Property Name="Price" Type="smallint" Nullable="false" />
+    <Property Name="Time" Type="datetime" Nullable="false" />
+    <Property Name="ID" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Film_ID" Type="smallint" Nullable="false" />
+    <Property Name="Hall_ID" Type="smallint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="HallSet">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="Num" Type="tinyint" Nullable="false" />
+    <Property Name="Type" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="AmountOfRow" Type="tinyint" Nullable="false" />
+    <Property Name="AmountOfSeats" Type="tinyint" Nullable="false" />
+    <Property Name="Deleted" Type="bit" Nullable="false" />
+    <Property Name="ID" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cinema_ID" Type="smallint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="СashierSet">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="Login" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="FIO" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ID" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cinema_ID" Type="smallint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SeatSet">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="NumberOfRow" Type="tinyint" Nullable="false" />
+    <Property Name="NumberOfSeat" Type="tinyint" Nullable="false" />
+    <Property Name="State" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Session_ID" Type="smallint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TicketSet">
+    <Key>
+      <PropertyRef Name="Number" />
+    </Key>
+    <Property Name="Number" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Seat_ID" Type="bigint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="BookingSet">
+    <Key>
+      <PropertyRef Name="Number" />
+    </Key>
+    <Property Name="Number" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Seat_ID" Type="bigint" Nullable="false" />
+  </EntityType>
+  <Association Name="CinemaHall">
+    <End Role="Cinema" Type="CinemaModel.Store.CinemaSet" Multiplicity="1" />
+    <End Role="Hall" Type="CinemaModel.Store.HallSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cinema">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Hall">
+        <PropertyRef Name="Cinema_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="CinemaСashier">
+    <End Role="Cinema" Type="CinemaModel.Store.CinemaSet" Multiplicity="1" />
+    <End Role="Сashier" Type="CinemaModel.Store.СashierSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cinema">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Сashier">
+        <PropertyRef Name="Cinema_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FilmSession">
+    <End Role="Film" Type="CinemaModel.Store.FilmSet" Multiplicity="1" />
+    <End Role="Session" Type="CinemaModel.Store.SessionSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Film">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Session">
+        <PropertyRef Name="Film_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="SessionSeat">
+    <End Role="Session" Type="CinemaModel.Store.SessionSet" Multiplicity="1" />
+    <End Role="Seat" Type="CinemaModel.Store.SeatSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Session">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Seat">
+        <PropertyRef Name="Session_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="SeatTicket">
+    <End Role="Seat" Type="CinemaModel.Store.SeatSet" Multiplicity="1" />
+    <End Role="Ticket" Type="CinemaModel.Store.TicketSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Seat">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Ticket">
+        <PropertyRef Name="Seat_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="SeatBooking">
+    <End Role="Seat" Type="CinemaModel.Store.SeatSet" Multiplicity="1" />
+    <End Role="Booking" Type="CinemaModel.Store.BookingSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Seat">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Booking">
+        <PropertyRef Name="Seat_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="HallSession">
+    <End Role="Hall" Type="CinemaModel.Store.HallSet" Multiplicity="1" />
+    <End Role="Session" Type="CinemaModel.Store.SessionSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hall">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Session">
+        <PropertyRef Name="Hall_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="CinemaModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="CinemaModelContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CinemaSet" EntityType="CinemaModel.Cinema" />
+          <EntitySet Name="FilmSet" EntityType="CinemaModel.Film" />
+          <EntitySet Name="SessionSet" EntityType="CinemaModel.Session" />
+          <EntitySet Name="HallSet" EntityType="CinemaModel.Hall" />
+          <EntitySet Name="СashierSet" EntityType="CinemaModel.Сashier" />
+          <EntitySet Name="SeatSet" EntityType="CinemaModel.Seat" />
+          <EntitySet Name="TicketSet" EntityType="CinemaModel.Ticket" />
+          <EntitySet Name="BookingSet" EntityType="CinemaModel.Booking" />
+          <AssociationSet Name="CinemaHall" Association="CinemaModel.CinemaHall">
+            <End Role="Cinema" EntitySet="CinemaSet" />
+            <End Role="Hall" EntitySet="HallSet" />
+          </AssociationSet>
+          <AssociationSet Name="CinemaСashier" Association="CinemaModel.CinemaСashier">
+            <End Role="Cinema" EntitySet="CinemaSet" />
+            <End Role="Сashier" EntitySet="СashierSet" />
+          </AssociationSet>
+          <AssociationSet Name="FilmSession" Association="CinemaModel.FilmSession">
+            <End Role="Film" EntitySet="FilmSet" />
+            <End Role="Session" EntitySet="SessionSet" />
+          </AssociationSet>
+          <AssociationSet Name="SessionSeat" Association="CinemaModel.SessionSeat">
+            <End Role="Session" EntitySet="SessionSet" />
+            <End Role="Seat" EntitySet="SeatSet" />
+          </AssociationSet>
+          <AssociationSet Name="SeatTicket" Association="CinemaModel.SeatTicket">
+            <End Role="Seat" EntitySet="SeatSet" />
+            <End Role="Ticket" EntitySet="TicketSet" />
+          </AssociationSet>
+          <AssociationSet Name="SeatBooking" Association="CinemaModel.SeatBooking">
+            <End Role="Seat" EntitySet="SeatSet" />
+            <End Role="Booking" EntitySet="BookingSet" />
+          </AssociationSet>
+          <AssociationSet Name="HallSession" Association="CinemaModel.HallSession">
+            <End Role="Hall" EntitySet="HallSet" />
+            <End Role="Session" EntitySet="SessionSet" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Cinema">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="Adress" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="City" Type="String" Nullable="false" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <Property Name="ID" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Hall" Relationship="CinemaModel.CinemaHall" FromRole="Cinema" ToRole="Hall" />
+          <NavigationProperty Name="Сashier" Relationship="CinemaModel.CinemaСashier" FromRole="Cinema" ToRole="Сashier" />
+        </EntityType>
+        <EntityType Name="Film">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="Name" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="Description" Type="String" Nullable="false" />
+          <Property Name="Year" Type="Int16" Nullable="false" />
+          <Property Name="length" Type="Time" Nullable="false" />
+          <Property Name="AgeLimit" Type="String" Nullable="false" />
+          <Property Name="Producer" Type="String" Nullable="false" />
+          <Property Name="ID" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Session" Relationship="CinemaModel.FilmSession" FromRole="Film" ToRole="Session" />
+          <Property Name="Poster" Type="String" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Session">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="Date" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="Price" Type="Int16" Nullable="false" />
+          <Property Name="Time" Type="DateTime" Nullable="false" />
+          <Property Name="ID" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Film" Relationship="CinemaModel.FilmSession" FromRole="Session" ToRole="Film" />
+          <NavigationProperty Name="Seat" Relationship="CinemaModel.SessionSeat" FromRole="Session" ToRole="Seat" />
+          <NavigationProperty Name="Hall" Relationship="CinemaModel.HallSession" FromRole="Session" ToRole="Hall" />
+        </EntityType>
+        <EntityType Name="Hall">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="Num" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="Type" Type="String" Nullable="false" />
+          <Property Name="AmountOfRow" Type="Byte" Nullable="false" />
+          <Property Name="AmountOfSeats" Type="Byte" Nullable="false" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <Property Name="ID" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Cinema" Relationship="CinemaModel.CinemaHall" FromRole="Hall" ToRole="Cinema" />
+          <NavigationProperty Name="Session" Relationship="CinemaModel.HallSession" FromRole="Hall" ToRole="Session" />
+        </EntityType>
+        <EntityType Name="Сashier">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="Login" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="FIO" Type="String" Nullable="false" />
+          <Property Name="Password" Type="String" Nullable="false" cg:SetterAccess="Public" annotation:StoreGeneratedPattern="None" />
+          <Property Name="ID" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Cinema" Relationship="CinemaModel.CinemaСashier" FromRole="Сashier" ToRole="Cinema" />
+        </EntityType>
+        <EntityType Name="Seat">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="NumberOfRow" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="NumberOfSeat" Type="Byte" Nullable="false" />
+          <Property Name="State" Type="String" Nullable="false" />
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Session" Relationship="CinemaModel.SessionSeat" FromRole="Seat" ToRole="Session" />
+          <NavigationProperty Name="Ticket" Relationship="CinemaModel.SeatTicket" FromRole="Seat" ToRole="Ticket" />
+          <NavigationProperty Name="Booking" Relationship="CinemaModel.SeatBooking" FromRole="Seat" ToRole="Booking" />
+        </EntityType>
+        <EntityType Name="Ticket">
+          <Key>
+            <PropertyRef Name="Number" />
+          </Key>
+          <Property Name="Number" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Seat" Relationship="CinemaModel.SeatTicket" FromRole="Ticket" ToRole="Seat" />
+        </EntityType>
+        <EntityType Name="Booking">
+          <Key>
+            <PropertyRef Name="Number" />
+          </Key>
+          <Property Name="Number" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Seat" Relationship="CinemaModel.SeatBooking" FromRole="Booking" ToRole="Seat" />
+        </EntityType>
+        <Association Name="CinemaHall">
+          <End Type="CinemaModel.Cinema" Role="Cinema" Multiplicity="1" />
+          <End Type="CinemaModel.Hall" Role="Hall" Multiplicity="*" />
+        </Association>
+        <Association Name="CinemaСashier">
+          <End Type="CinemaModel.Cinema" Role="Cinema" Multiplicity="1" />
+          <End Type="CinemaModel.Сashier" Role="Сashier" Multiplicity="*" />
+        </Association>
+        <Association Name="FilmSession">
+          <End Type="CinemaModel.Film" Role="Film" Multiplicity="1" />
+          <End Type="CinemaModel.Session" Role="Session" Multiplicity="*" />
+        </Association>
+        <Association Name="SessionSeat">
+          <End Type="CinemaModel.Session" Role="Session" Multiplicity="1" />
+          <End Type="CinemaModel.Seat" Role="Seat" Multiplicity="*" />
+        </Association>
+        <Association Name="SeatTicket">
+          <End Type="CinemaModel.Seat" Role="Seat" Multiplicity="1" />
+          <End Type="CinemaModel.Ticket" Role="Ticket" Multiplicity="0..1" />
+        </Association>
+        <Association Name="SeatBooking">
+          <End Type="CinemaModel.Seat" Role="Seat" Multiplicity="1" />
+          <End Type="CinemaModel.Booking" Role="Booking" Multiplicity="0..1" />
+        </Association>
+        <Association Name="HallSession">
+          <End Type="CinemaModel.Hall" Role="Hall" Multiplicity="1" />
+          <End Type="CinemaModel.Session" Role="Session" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="CinemaModelStoreContainer" CdmEntityContainer="CinemaModelContainer">
+    <EntitySetMapping Name="CinemaSet">
+      <EntityTypeMapping TypeName="IsTypeOf(CinemaModel.Cinema)">
+        <MappingFragment StoreEntitySet="CinemaSet">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Adress" ColumnName="Adress" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FilmSet">
+      <EntityTypeMapping TypeName="IsTypeOf(CinemaModel.Film)">
+        <MappingFragment StoreEntitySet="FilmSet">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Year" ColumnName="Year" />
+          <ScalarProperty Name="length" ColumnName="length" />
+          <ScalarProperty Name="AgeLimit" ColumnName="AgeLimit" />
+          <ScalarProperty Name="Producer" ColumnName="Producer" />
+          <ScalarProperty Name="Poster" ColumnName="Poster" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SessionSet">
+      <EntityTypeMapping TypeName="IsTypeOf(CinemaModel.Session)">
+        <MappingFragment StoreEntitySet="SessionSet">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="Time" ColumnName="Time" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="HallSet">
+      <EntityTypeMapping TypeName="IsTypeOf(CinemaModel.Hall)">
+        <MappingFragment StoreEntitySet="HallSet">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Num" ColumnName="Num" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="AmountOfRow" ColumnName="AmountOfRow" />
+          <ScalarProperty Name="AmountOfSeats" ColumnName="AmountOfSeats" />
+          <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="СashierSet">
+      <EntityTypeMapping TypeName="IsTypeOf(CinemaModel.Сashier)">
+        <MappingFragment StoreEntitySet="СashierSet">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Login" ColumnName="Login" />
+          <ScalarProperty Name="FIO" ColumnName="FIO" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SeatSet">
+      <EntityTypeMapping TypeName="IsTypeOf(CinemaModel.Seat)">
+        <MappingFragment StoreEntitySet="SeatSet">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="NumberOfRow" ColumnName="NumberOfRow" />
+          <ScalarProperty Name="NumberOfSeat" ColumnName="NumberOfSeat" />
+          <ScalarProperty Name="State" ColumnName="State" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TicketSet">
+      <EntityTypeMapping TypeName="IsTypeOf(CinemaModel.Ticket)">
+        <MappingFragment StoreEntitySet="TicketSet">
+          <ScalarProperty Name="Number" ColumnName="Number" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BookingSet">
+      <EntityTypeMapping TypeName="IsTypeOf(CinemaModel.Booking)">
+        <MappingFragment StoreEntitySet="BookingSet">
+          <ScalarProperty Name="Number" ColumnName="Number" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="CinemaHall" TypeName="CinemaModel.CinemaHall" StoreEntitySet="HallSet">
+      <EndProperty Name="Cinema">
+        <ScalarProperty Name="ID" ColumnName="Cinema_ID" />
+      </EndProperty>
+      <EndProperty Name="Hall">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="CinemaСashier" TypeName="CinemaModel.CinemaСashier" StoreEntitySet="СashierSet">
+      <EndProperty Name="Cinema">
+        <ScalarProperty Name="ID" ColumnName="Cinema_ID" />
+      </EndProperty>
+      <EndProperty Name="Сashier">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="FilmSession" TypeName="CinemaModel.FilmSession" StoreEntitySet="SessionSet">
+      <EndProperty Name="Film">
+        <ScalarProperty Name="ID" ColumnName="Film_ID" />
+      </EndProperty>
+      <EndProperty Name="Session">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="SessionSeat" TypeName="CinemaModel.SessionSeat" StoreEntitySet="SeatSet">
+      <EndProperty Name="Session">
+        <ScalarProperty Name="ID" ColumnName="Session_ID" />
+      </EndProperty>
+      <EndProperty Name="Seat">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="SeatTicket" TypeName="CinemaModel.SeatTicket" StoreEntitySet="TicketSet">
+      <EndProperty Name="Seat">
+        <ScalarProperty Name="ID" ColumnName="Seat_ID" />
+      </EndProperty>
+      <EndProperty Name="Ticket">
+        <ScalarProperty Name="Number" ColumnName="Number" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="SeatBooking" TypeName="CinemaModel.SeatBooking" StoreEntitySet="BookingSet">
+      <EndProperty Name="Seat">
+        <ScalarProperty Name="ID" ColumnName="Seat_ID" />
+      </EndProperty>
+      <EndProperty Name="Booking">
+        <ScalarProperty Name="Number" ColumnName="Number" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="HallSession" TypeName="CinemaModel.HallSession" StoreEntitySet="SessionSet">
+      <EndProperty Name="Hall">
+        <ScalarProperty Name="ID" ColumnName="Hall_ID" />
+      </EndProperty>
+      <EndProperty Name="Session">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+        <DesignerProperty Name="UseLegacyProvider" Value="True" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
