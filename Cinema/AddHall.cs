@@ -58,47 +58,20 @@ namespace Cinema
 
         private void btAdd_Click(object sender, EventArgs e)
         {
-            if ((dudType.Text == "")||(cbCinema.Text=="")) MessageBox.Show("Вы заполнили не все поля!");
+            if ((dudType.Text == "") || (cbCinema.Text == "")) MessageBox.Show("Вы заполнили не все поля!");
             else
             {
-                bool ok = true;
-                foreach (Hall x in db.HallSet)
+                if (add)
                 {
-                    if ((x.Cinema == ((Cinema)(cbCinema.SelectedValue))) && (x.Num== nudNumber.Value)&&((add) || (!add) && (hall.ID != x.ID)))
-                    {
-                        MessageBox.Show("В данном кинотеатре уже есть зал с таким номером!");
-                        ok = false;
-                        break;
-                    }
+                    HallWork.Add(db.CinemaSet.Find(((Cinema)cbCinema.SelectedValue).ID), (byte)nudNumber.Value, dudType.Text, (byte)nudRows.Value, (byte)nudSeats.Value);
                 }
-                if (ok)
+                else
                 {
-                    if (add)
-                    {
-                        Hall c = new Hall();
-                        c.Num = (byte)nudNumber.Value;
-                        c.Type = dudType.Text;
-                        c.AmountOfRow = (byte)nudRows.Value;
-                        c.AmountOfSeats = (byte)nudSeats.Value;
-                        c.Cinema = db.CinemaSet.Find(((Cinema)(cbCinema.SelectedValue)).ID);
-                        db.HallSet.Add(c);
-                    }
-                    else
-                    {
-                        DialogResult dialogResult = MessageBox.Show("Данные о зале будут сохранены. Вы уверены, что хотите изменить их?", "Сохранение изменений", MessageBoxButtons.YesNo);
-                        if (dialogResult == DialogResult.Yes)
-                        {
-                            db.HallSet.Find(hall.ID).Num = (byte)nudNumber.Value;
-                            db.HallSet.Find(hall.ID).Type = dudType.Text;
-                            db.HallSet.Find(hall.ID).AmountOfRow = (byte)nudRows.Value;
-                            db.HallSet.Find(hall.ID).AmountOfSeats = (byte)nudSeats.Value;
-                        }
-                    }
-                    db.SaveChanges();
-                    form.UpdateHall();
-                    saved = true;
-                    this.Close();
+                    HallWork.Change(hall.Cinema, (byte)nudNumber.Value, dudType.Text, (byte)nudRows.Value, (byte)nudSeats.Value, hall.ID);
                 }
+                form.UpdateHall();
+                saved = true;
+                this.Close();
             }
         }
 
@@ -111,6 +84,10 @@ namespace Cinema
                 if (dialogResult == DialogResult.No) e.Cancel = true;
             }
             form.Enabled = true;
+        }
+
+        private void cbCinema_SelectedIndexChanged(object sender, EventArgs e)
+        {
         }
     }
 }

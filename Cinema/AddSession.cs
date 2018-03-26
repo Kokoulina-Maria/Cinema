@@ -27,7 +27,9 @@ namespace Cinema
         }
         public void Info()
         {
+            if (add)
             cbHall.DataSource = (from d in ((Cinema)(cbCinema.SelectedValue)).Hall where d.Deleted == false select d).ToList();
+            else cbHall.DataSource= (from d in (session.Hall.Cinema.Hall) where d.Deleted == false select d).ToList();
             cbHall.DisplayMember = "Num";
             cbHall.Update();           
         }
@@ -40,8 +42,8 @@ namespace Cinema
                 label1.Visible = false;
                 nudPrice.Value = session.Price;
                 dtpDate.Value = session.Date.Date;
-                //cbHall.SelectedValue = session.Hall.Num;
-                //cbFilm.SelectedValue = session.Film.Name;
+                cbHall.Text = session.Hall.Num.ToString();
+                cbFilm.Text = session.Film.Name.ToString();
                 nudHour.Value = session.Time.Hour;
                 nudMin.Value = session.Time.Minute;
                 cbCinema.Visible = false;
@@ -57,7 +59,7 @@ namespace Cinema
             cbCinema.Update();
             cbFilm.DataSource = (from d in db.FilmSet select d).ToList();
             cbFilm.DisplayMember = "Name";
-            cbHall.Update();
+            cbFilm.Update();
             Info();
             texts();
         }

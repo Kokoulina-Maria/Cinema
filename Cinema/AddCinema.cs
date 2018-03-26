@@ -24,16 +24,16 @@ namespace Cinema
             form.Enabled = false;
             this.add = add;
             cinema = x;
-            texts();
+            texts();        
         }
         public void texts()
         {
             if (!add)
             {
                 this.Text = "Редактирование информации о кинотеатре";
-                tbName.Text = cinema.Name;
-                tbCity.Text = cinema.City;
-                tbAdress.Text = cinema.Adress;
+                tbName.Text = db.CinemaSet.Find(cinema.ID).Name;
+                tbCity.Text = db.CinemaSet.Find(cinema.ID).City;
+                tbAdress.Text = db.CinemaSet.Find(cinema.ID).Adress;
                 btAdd.Text = "Сохранить изменения";
             }
         }
@@ -43,41 +43,15 @@ namespace Cinema
             if ((tbName.Text == "") || (tbCity.Text == "") || (tbAdress.Text == "")) MessageBox.Show("Вы заполнили не все поля!");
             else
             {
-                bool ok = true;
-                foreach (Cinema x in db.CinemaSet)
+                if (add)
+                    CinemaWork.Add(tbName.Text, tbCity.Text, tbAdress.Text);
+                else
                 {
-                    if ((x.City == tbCity.Text) && (x.Adress == tbAdress.Text) && ((add) || (!add) && (cinema.ID != x.ID)))
-                    {
-                        MessageBox.Show("Кинотеатр по таком адресу уже существует!");
-                        ok = false;
-                        break;
-                    }
-                    if ((x.City == tbCity.Text) && (x.Name == tbName.Text) && ((add) || (!add) && (cinema.ID != x.ID)))
-                    {
-                        MessageBox.Show("В данном городе уже существует кинотеатр с таким названием!");
-                        ok = false;
-                        break;
-                    }
+                    CinemaWork.Change(tbName.Text, tbCity.Text, tbAdress.Text, cinema.ID);
                 }
-                if (ok)
-                {
-                    if (add)
-                        db.CinemaSet.Add(new Cinema { Name = tbName.Text, City = tbCity.Text, Adress = tbAdress.Text });
-                    else
-                    {
-                        DialogResult dialogResult = MessageBox.Show("Данные о кинотеатре будут сохранены. Вы уверены, что хотите изменить их?", "Сохранение изменений", MessageBoxButtons.YesNo);
-                        if (dialogResult == DialogResult.Yes)
-                        {
-                            db.CinemaSet.Find(cinema.ID).Name = tbName.Text;
-                            db.CinemaSet.Find(cinema.ID).City = tbCity.Text;
-                            db.CinemaSet.Find(cinema.ID).Adress = tbAdress.Text;
-                        }
-                    }
-                    db.SaveChanges();
                     form.UpdateCinema();
                     saved = true;
                     this.Close();
-                }
             }
         }
 

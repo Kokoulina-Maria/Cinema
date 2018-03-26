@@ -446,15 +446,31 @@ namespace Cinema
         //Нужно добавить проверку на ввод!
         private void btFind_Click(object sender, EventArgs e)
         {
+            bool ok=true;
+            if ((cbAtr.Text == "Год") || (cbAtr.Text == "Номер") ||
+                (cbAtr.Text == "Количество рядов") || (cbAtr.Text == "Количество мест в ряду")
+                  || (cbAtr.Text == "Цена") || (cbAtr.Text == "Ряд") || (cbAtr.Text == "Номер в ряду"))
+            {
+                ok = ReadInt();
+            }
+            if (cbAtr.Text == "Дата")
+            { 
+                ok = ReadDate();
+            }
+            if ((cbAtr.Text == "Длительность") || (cbAtr.Text == "Время"))
+            {
+                ok = ReadTime();
+            }
             if ((tbEqv.Visible) && (tbEqv.Text == ""))
                 MessageBox.Show("Заполните поле ввода!");
-            else
+            else if (ok)
             {
                 if ((cbNewEnt.Text == "И"))
                     Search(true);
                 else Search(false);
                 unBlockNewEnt();
                 BlockZapr();
+                Information();
             }
         }
 
@@ -476,15 +492,26 @@ namespace Cinema
             }
             if (NowEnt == eEntity.Кассир)
             {
-                form = new AddСashier(this, true, null);
+                if (db.CinemaSet.Count() == 0)
+                    MessageBox.Show("Вы не можете добавить кассира, так как нет ни одного кинотеатра!");
+                else
+                    form = new AddСashier(this, true, null);
             }
             if (NowEnt == eEntity.Зал)
             {
-                form = new AddHall(this, true, null);
+                if (db.CinemaSet.Count() == 0)
+                    MessageBox.Show("Вы не можете добавить зал, так как нет ни одного кинотеатра!");
+                else
+                    form = new AddHall(this, true, null);
             }
             if (NowEnt == eEntity.Сеанс)
             {
-                form = new AddSession(this, true, null);
+                if (db.HallSet.Count() == 0)
+                    MessageBox.Show("Вы не можете добавить кассира, так как нет ни одного зала!");
+                else if (db.FilmSet.Count() == 0)
+                    MessageBox.Show("Вы не можете добавить кассира, так как нет ни одного фильма");
+                else
+                    form = new AddSession(this, true, null);
             }
             form.Show();
         }
@@ -666,22 +693,7 @@ namespace Cinema
                 DialogResult dialogResult = MessageBox.Show("Кинотеатр и все его залы будут помечены, как удаленные, пользователи не смогут их увидеть. Вы сможете вернуть его в любое время. Однако все сеансы и кассиры в данном кинотеатре будут удалены безвозвратно. Возможно, на них были куплены билеты! Вы действительно хотите удалить кинотеатр? ", "Удаление кинотеатра", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
-                    List<Hall> h = s.Hall.ToList();
-                    foreach (Hall x in h)
-                    {//удаляем все кинотеатры данного фильма 
-                        List<Session> ses = x.Session.ToList();
-                        foreach (Session y in ses)
-                        {
-                            DeleteSession(y.ID);
-                        }
-                        db.HallSet.Find(x.ID).Deleted = true;
-                    }
-                    List<Сashier> c = s.Сashier.ToList();
-                    foreach (Сashier x in c)
-                    {
-                        db.СashierSet.Remove(x);
-                    }
-                    db.CinemaSet.Find(s.ID).Deleted = true;
+                    CinemaWork.Delete(s.ID);
                 }
             }
             else
@@ -689,11 +701,7 @@ namespace Cinema
                 DialogResult dialogResult = MessageBox.Show("Кинотеатр и все его залы будут восстановлены, пользователи смогут их увидеть. Вы уверены, что хотите восстановить кинотеатр?", "Восстановление кинотеатра", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
-                    foreach (Hall x in s.Hall)
-                    {//восстанавливаем все кинотеатры данного фильма 
-                        db.HallSet.Find(x.ID).Deleted = false;
-                    }
-                    db.CinemaSet.Find(s.ID).Deleted = false;
+                    CinemaWork.Restore(s.ID);
                 }
             }
             db.SaveChanges();
@@ -708,22 +716,17 @@ namespace Cinema
                 DialogResult dialogResult = MessageBox.Show("Зал будет помечен, как удаленный, пользователи не смогут его увидеть. Вы сможете вернуть его в любое время. Однако все сеансы будут удалены безвозвратно. Возможно, на них были куплены билеты! Вы действительно хотите удалить зал? ", "Удаление зала", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
-                    List<Session> h = s.Session.ToList();
-                    foreach (Session x in h)
-                    {//удаляем все сеансы                  
-                        DeleteSession(x.ID);
-                    }
-                    db.HallSet.Find(s.ID).Deleted = true;
+                    HallWork.Delete(s.ID);
                 }
             }
             else
             {
                 if (!s.Cinema.Deleted)
                 {
-                    DialogResult dialogResult = MessageBox.Show("Зал будет восстановлен. Посльзователи смогут его увидеть. Вы уверены, что хотите восстановить зал?", "Восстановление зала", MessageBoxButtons.YesNo);
+                    DialogResult dialogResult = MessageBox.Show("Зал будет восстановлен. Пользователи смогут его увидеть. Вы уверены, что хотите восстановить зал?", "Восстановление зала", MessageBoxButtons.YesNo);
                     if (dialogResult == DialogResult.Yes)
                     {
-                        db.HallSet.Find(s.ID).Deleted = false;
+                        HallWork.Restore(s.ID);
                     }
                 }
                 else MessageBox.Show("Зал не может быть восстановлен, так как удален кинотеатр. Сначала восстановите кинотеатр!");
@@ -789,7 +792,14 @@ namespace Cinema
             {
                 if ((user != eUser.Админ) && (db.FilmSet.Count() > 0) && (dgvList.SelectedRows.Count > 0))
                 {
-                    pbPoster.Image = Image.FromFile(db.FilmSet.Find(dgvList.SelectedRows[0].Cells[0].Value).Poster);
+                    try
+                    {
+                        pbPoster.Image = Image.FromFile(db.FilmSet.Find(dgvList.SelectedRows[0].Cells[0].Value).Poster);
+                    }
+                    catch
+                    {
+                        pbPoster.Image = Image.FromFile("nophoto.jpg");
+                    }
                     tbInfo.Text = db.FilmSet.Find(dgvList.SelectedRows[0].Cells[0].Value).Description;
                 }
             }
@@ -808,7 +818,6 @@ namespace Cinema
                 if (user != eUser.Админ)
                 {
                     btSession.Enabled = true;
-                    //здесь должна быть кратинка мест
                 }
             }
         }
@@ -978,41 +987,6 @@ namespace Cinema
             }
             return result;
         }
-        public List<Cinema> SearchCinema(List<Cinema> f)
-        {
-            List<Cinema> result = new List<Cinema>();
-            switch (cbAtr.Text)
-            {
-                case "Название":
-                    {
-                        switch (cbSign.Text)
-                        {
-                            case "=": { result = (from d in f where d.Name == tbEqv.Text select d).ToList(); break; }
-                            case "!=": { result = (from d in f where d.Name != tbEqv.Text select d).ToList(); break; }
-                        }
-                        break;
-                    }
-                case "Адрес":
-                    {
-                        switch (cbSign.Text)
-                        {
-                            case "=": { result = (from d in f where d.Adress == tbEqv.Text select d).ToList(); break; }
-                            case "!=": { result = (from d in f where d.Adress != tbEqv.Text select d).ToList(); break; }
-                        }
-                        break;
-                    }
-                case "Город":
-                    {
-                        switch (cbSign.Text)
-                        {
-                            case "=": { result = (from d in f where d.City == tbEqv.Text select d).ToList(); break; }
-                            case "!=": { result = (from d in f where d.City != tbEqv.Text select d).ToList(); break; }
-                        }
-                        break;
-                    }
-            }
-            return result;
-        }
         public List<Сashier> SearchCashier(List<Сashier> f)
         {
             List<Сashier> result = new List<Сashier>();
@@ -1079,103 +1053,6 @@ namespace Cinema
                     }
             }
             return result;
-        }
-        public List<Hall> SearchHall(List<Hall> f)
-        {
-            List<Hall> result = new List<Hall>();
-            switch (cbEnt.Text)
-            {
-                case "Зал":
-                    {
-                        switch (cbAtr.Text)
-                        {
-                            case "Номер":
-                                {
-                                    switch (cbSign.Text)
-                                    {
-                                        case "=": { result = (from d in f where d.Num == int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Num != int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                        case ">": { result = (from d in f where d.Num > int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                        case "<": { result = (from d in f where d.Num < int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                        case ">=": { result = (from d in f where d.Num >= int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                        case "<=": { result = (from d in f where d.Num <= int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Тип":
-                                {
-                                    switch (cbSign.Text)
-                                    {
-                                        case "=": { result = (from d in f where d.Type == cbEqv.Text select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Type != cbEqv.Text select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Количество рядов":
-                                {
-                                    switch (cbSign.Text)
-                                    {
-                                        case "=": { result = (from d in f where d.AmountOfRow == int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.AmountOfRow != int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                        case ">": { result = (from d in f where d.AmountOfRow > int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                        case "<": { result = (from d in f where d.AmountOfRow < int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                        case ">=": { result = (from d in f where d.AmountOfRow >= int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                        case "<=": { result = (from d in f where d.AmountOfRow <= int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Количество мест в ряду":
-                                {
-                                    switch (cbSign.Text)
-                                    {
-                                        case "=": { result = (from d in f where d.AmountOfSeats == int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.AmountOfSeats != int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                        case ">": { result = (from d in f where d.AmountOfSeats > int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                        case "<": { result = (from d in f where d.AmountOfSeats < int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                        case ">=": { result = (from d in f where d.AmountOfSeats >= int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                        case "<=": { result = (from d in f where d.AmountOfSeats <= int.Parse(tbEqv.Text) select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                        }
-                        break;
-                    }
-                case "Кинотеатр":
-                    {
-                        switch (cbAtr.Text)
-                        {
-                            case "Название":
-                                {
-                                    switch (cbSign.Text)
-                                    {
-                                        case "=": { result = (from d in f where d.Cinema.Name == tbEqv.Text select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Cinema.Name != tbEqv.Text select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Адрес":
-                                {
-                                    switch (cbSign.Text)
-                                    {
-                                        case "=": { result = (from d in f where d.Cinema.Adress == tbEqv.Text select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Cinema.Adress != tbEqv.Text select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Город":
-                                {
-                                    switch (cbSign.Text)
-                                    {
-                                        case "=": { result = (from d in f where d.Cinema.City == tbEqv.Text select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Cinema.City != tbEqv.Text select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                        }
-                        break;
-                    }
-            }
-            return (result);
         }
         public List<Session> SearchSession(List<Session> f)
         {
@@ -1919,12 +1796,12 @@ namespace Cinema
                     }
                 case eEntity.Кинотеатр:
                     {
-                        if (ok) { nowcinemas = SearchCinema(nowcinemas); }
+                        if (ok) { nowcinemas = CinemaWork.Search(nowcinemas, cbAtr.Text, cbSign.Text, tbEqv.Text).ToList(); }
                         else
                         {
                             cinemas.AddRange(nowcinemas);
                             nowcinemas = db.CinemaSet.ToList();
-                            nowcinemas = SearchCinema(nowcinemas);
+                            nowcinemas = CinemaWork.Search(nowcinemas, cbAtr.Text, cbSign.Text, tbEqv.Text).ToList();
                         }
                         List<Cinema> vivod = new List<Cinema>();
                         vivod.AddRange(cinemas);
@@ -1938,12 +1815,12 @@ namespace Cinema
                     }
                 case eEntity.Зал:
                     {
-                        if (ok) { nowhalls = SearchHall(nowhalls); }
+                        if (ok) { nowhalls = HallWork.Search(nowhalls, cbEnt.Text, cbAtr.Text, cbSign.Text, tbEqv.Text, cbEqv.Text); }
                         else
                         {
                             halls.AddRange(nowhalls);
                             nowhalls = db.HallSet.ToList();
-                            nowhalls = SearchHall(nowhalls);
+                            nowhalls = HallWork.Search(nowhalls, cbEnt.Text, cbAtr.Text, cbSign.Text, tbEqv.Text, cbEqv.Text);
                         }
                         List<Hall> vivod = new List<Hall>();
                         vivod.AddRange(halls);
@@ -2061,16 +1938,39 @@ namespace Cinema
         }
         public bool ReadDate()
         {
-            DateTime t = new DateTime();
-            bool ok = DateTime.TryParse(cbEqv.Text, out t);
-            if (!ok) MessageBox.Show("Неверный ввод!");
+            bool ok = true;
+            try
+            {
+                DateTime t = new DateTime();
+                t = DateTime.Parse(tbEqv.Text);
+            }
+            catch
+            {
+                ok = false;
+                MessageBox.Show("Неверный ввод!");
+            }
             return ok;
         }
         public bool ReadInt()
         {
             int i = new int();
-            bool ok = int.TryParse(cbEqv.Text, out i);
+            bool ok = int.TryParse(tbEqv.Text, out i);
             if (!ok) MessageBox.Show("Неверный ввод!");
+            return ok;
+        }
+        public bool ReadTime()
+        {
+            bool ok = true;
+            try
+            {
+                TimeSpan t = new TimeSpan();
+                t = TimeSpan.Parse(tbEqv.Text);
+            }
+            catch
+            {
+                ok = false;
+                MessageBox.Show("Неверный ввод!");
+            }
             return ok;
         }
 

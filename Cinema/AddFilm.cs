@@ -85,9 +85,9 @@ namespace Cinema
                 bool ok = true;
                 foreach (Film x in db.FilmSet)
                 {
-                    if ((x.Name == tbName.Text) && (x.Producer == tbProd.Text) && ((add) || (!add) && (film.ID != x.ID)))
+                    if ((x.Name == tbName.Text) && ((add) || (!add) && (film.ID != x.ID)))
                     {
-                        MessageBox.Show("Фильм с таким названием и режиссером уже существует");
+                        MessageBox.Show("Фильм с таким названием уже существует");
                         ok = false;
                         break;
                     }

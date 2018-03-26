@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tbLogin = new System.Windows.Forms.TextBox();
@@ -217,7 +218,6 @@
             // dgvList
             // 
             this.dgvList.AllowUserToAddRows = false;
-            this.dgvList.AllowUserToDeleteRows = false;
             this.dgvList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvList.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             this.dgvList.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -225,7 +225,6 @@
             this.dgvList.Location = new System.Drawing.Point(18, 253);
             this.dgvList.Name = "dgvList";
             this.dgvList.ReadOnly = true;
-            this.dgvList.RowHeadersVisible = false;
             this.dgvList.RowTemplate.Height = 24;
             this.dgvList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvList.Size = new System.Drawing.Size(520, 466);
@@ -322,6 +321,7 @@
             this.tbEqv.Size = new System.Drawing.Size(178, 22);
             this.tbEqv.TabIndex = 24;
             this.tbEqv.Text = "Введите значение...";
+            this.tbEqv.Visible = false;
             // 
             // btExit
             // 
@@ -335,6 +335,7 @@
             // 
             // pbPoster
             // 
+            this.pbPoster.ErrorImage = ((System.Drawing.Image)(resources.GetObject("pbPoster.ErrorImage")));
             this.pbPoster.Location = new System.Drawing.Point(660, 253);
             this.pbPoster.Name = "pbPoster";
             this.pbPoster.Size = new System.Drawing.Size(158, 243);

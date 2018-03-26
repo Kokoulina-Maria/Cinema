@@ -179,6 +179,7 @@
             this.cbCinema.Name = "cbCinema";
             this.cbCinema.Size = new System.Drawing.Size(220, 24);
             this.cbCinema.TabIndex = 59;
+            this.cbCinema.SelectedIndexChanged += new System.EventHandler(this.cbCinema_SelectedIndexChanged);
             this.cbCinema.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cbCinema_KeyPress);
             // 
             // label5

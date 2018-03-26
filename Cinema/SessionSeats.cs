@@ -95,9 +95,10 @@ namespace Cinema
                             a.Add(d);
                             break;
                         }
+                    if (choose.Contains(a[0])) DrawSeat(i, j, new SolidBrush(Color.Blue));
                     if (a[0].State == "Свободно") DrawSeat(i, j, new SolidBrush(Color.Green));
                     if (a[0].State == "Занято") DrawSeat(i, j, new SolidBrush(Color.Red));
-                    if (a[0].State=="Забронировано") DrawSeat(i, j, new SolidBrush(Color.Yellow));
+                    if (a[0].State=="Забронировано") DrawSeat(i, j, new SolidBrush(Color.Yellow));                   
                 }
         }
         public void DrawSeat(int i, int j, Brush brush)

@@ -46,7 +46,7 @@ namespace Cinema
         private void tbPassword_KeyPress(object sender, KeyPressEventArgs e)
         {
             char number = e.KeyChar;
-            if (!(Char.IsDigit(number)))
+            if (!Char.IsDigit(number) && number != 8 && number != 127 && number != 32)
                 e.Handled = true;
         }
 
@@ -70,7 +70,7 @@ namespace Cinema
                 {
                     if ((x.Login == tbLogin.Text)  && ((add) || (!add) && (cashier.ID != x.ID)))
                     {
-                        MessageBox.Show(" с таким логином уже существует!");
+                        MessageBox.Show(" Кассир с таким логином уже существует!");
                         ok = false;
                         break;
                     }
