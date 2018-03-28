@@ -58,13 +58,15 @@ namespace Cinema
             List<Session> h = (db.HallSet.Find(ID)).Session.ToList();
             foreach (Session x in h)
             {//удаляем все сеансы                  
-                //DeleteSession(x.ID);
+                SessionWork.Delete(x.ID, db);
             }
             db.HallSet.Find(ID).Deleted = true;
+            db.SaveChanges();
         }
         public static void Restore(int ID)
         {
             db.HallSet.Find(ID).Deleted = false;
+            db.SaveChanges();
         }
         public static List<Hall> Search(List<Hall> f, string ent, string atr, string sign, string eqv, string eqv2)
         {

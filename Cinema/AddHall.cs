@@ -34,11 +34,11 @@ namespace Cinema
             if (!add)
             {
                 this.Text = "Редактирование информации о зале";
-                nudNumber.Value = hall.Num;
-                dudType.Text = hall.Type;
-                nudRows.Value = hall.AmountOfRow;
-                nudSeats.Value = hall.AmountOfSeats;
-                if (hall.Session.Count > 0)
+                nudNumber.Value = db.HallSet.Find(hall.ID).Num;
+                dudType.Text = db.HallSet.Find(hall.ID).Type;
+                nudRows.Value = db.HallSet.Find(hall.ID).AmountOfRow;
+                nudSeats.Value = db.HallSet.Find(hall.ID).AmountOfSeats;
+                if (db.HallSet.Find(hall.ID).Session.Count > 0)
                 {
                     nudRows.Enabled = false;
                     nudSeats.Enabled = false;

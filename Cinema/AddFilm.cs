@@ -33,13 +33,13 @@ namespace Cinema
             if (!add)
             {
                 this.Text = "Редактирование информации о фильме";
-                tbName.Text = film.Name;
-                nudYear.Value = film.Year;
-                tbProd.Text = film.Producer;
-                dudAge.Text = film.AgeLimit;
-                nudHour.Value = film.length.Hours;
-                nudMin.Value = film.length.Minutes;
-                tbDescrip.Text = film.Description;
+                tbName.Text = db.FilmSet.Find(film.ID).Name;
+                nudYear.Value = db.FilmSet.Find(film.ID).Year;
+                tbProd.Text = db.FilmSet.Find(film.ID).Producer;
+                dudAge.Text = db.FilmSet.Find(film.ID).AgeLimit;
+                nudHour.Value = db.FilmSet.Find(film.ID).length.Hours;
+                nudMin.Value = db.FilmSet.Find(film.ID).length.Minutes;
+                tbDescrip.Text = db.FilmSet.Find(film.ID).Description;
                 btAdd.Text = "Сохранить изменения";
             }
         }
@@ -79,44 +79,24 @@ namespace Cinema
 
         private void btAdd_Click(object sender, EventArgs e)
         {
-            if ((tbName.Text == "") || (tbProd.Text == "") || ((poster == "")&&(add)) || (tbDescrip.Text == "")) MessageBox.Show("Вы заполнили не все поля!");
+            if ((tbName.Text == "") || (tbProd.Text == "") || ((poster == "") && (add)) || (tbDescrip.Text == "")) MessageBox.Show("Вы заполнили не все поля!");
             else
             {
-                bool ok = true;
-                foreach (Film x in db.FilmSet)
+                TimeSpan time = new TimeSpan((int)nudHour.Value, (int)nudMin.Value, 0);
+                if (add)
+                    FilmWork.Add(tbName.Text, dudAge.Text, tbDescrip.Text, time, tbProd.Text, (short)nudYear.Value, poster);
+                else
                 {
-                    if ((x.Name == tbName.Text) && ((add) || (!add) && (film.ID != x.ID)))
+                    DialogResult dialogResult = MessageBox.Show("Данные о фильме будут сохранены. Вы уверены, что хотите изменить их?", "Сохранение изменений", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
                     {
-                        MessageBox.Show("Фильм с таким названием уже существует");
-                        ok = false;
-                        break;
+                        FilmWork.Change(tbName.Text, film.ID, dudAge.Text, tbDescrip.Text, time, tbProd.Text, (short)nudYear.Value, poster);
                     }
                 }
-                if (ok)
-                {
-                    TimeSpan time = new TimeSpan((int)nudHour.Value, (int)nudMin.Value, 0);
-                    if (add)
-                        db.FilmSet.Add(new Film { Name = tbName.Text, AgeLimit = dudAge.Text, Description = tbDescrip.Text, length = time, Producer = tbProd.Text, Year = (short)nudYear.Value, Poster = poster });
-                    else
-                    {
-                        DialogResult dialogResult = MessageBox.Show("Данные о фильме будут сохранены. Вы уверены, что хотите изменить их?", "Сохранение изменений", MessageBoxButtons.YesNo);
-                        if (dialogResult == DialogResult.Yes)
-                        {
-                            db.FilmSet.Find(film.ID).AgeLimit = dudAge.Text;
-                            db.FilmSet.Find(film.ID).Name = tbName.Text;
-                            db.FilmSet.Find(film.ID).Description = tbDescrip.Text;
-                            db.FilmSet.Find(film.ID).length = time;
-                            db.FilmSet.Find(film.ID).Producer = tbProd.Text;
-                            db.FilmSet.Find(film.ID).Year = (short)nudYear.Value;
-                            if (poster!= "")
-                            db.FilmSet.Find(film.ID).Poster = poster;
-                        }
-                    }
-                    db.SaveChanges();
-                    form.UpdateFilms();
-                    saved = true;
-                    this.Close();
-                }
+                db.SaveChanges();
+                form.UpdateFilms();
+                saved = true;
+                this.Close();
             }
         }
 

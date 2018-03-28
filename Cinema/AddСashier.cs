@@ -34,9 +34,9 @@ namespace Cinema
             if (!add)
             {
                 this.Text = "Редактирование информации о кассире";
-                tbFIO.Text = cashier.FIO;
-                tbLogin.Text = cashier.Login;
-                tbPassword.Text = cashier.Password;
+                tbFIO.Text = db.СashierSet.Find(cashier.ID).FIO;
+                tbLogin.Text = db.СashierSet.Find(cashier.ID).Login;
+                tbPassword.Text = db.СashierSet.Find(cashier.ID).Password;
                 cbCinema.Visible=false;
                 label4.Visible = false;
                 btAdd.Text = "Сохранить изменения";
@@ -62,50 +62,26 @@ namespace Cinema
 
         private void btAdd_Click(object sender, EventArgs e)
         {
-            if ((tbFIO.Text == "") || (tbLogin.Text == "") || (tbPassword.Text == "")||(cbCinema.Text=="")) MessageBox.Show("Вы заполнили не все поля!");
+            if ((tbFIO.Text == "") || (tbLogin.Text == "") || (tbPassword.Text == "") || (cbCinema.Text == "")) MessageBox.Show("Вы заполнили не все поля!");
             else
             {
-                bool ok = true;
-                foreach (Сashier x in db.СashierSet)
+
+                if (add)
                 {
-                    if ((x.Login == tbLogin.Text)  && ((add) || (!add) && (cashier.ID != x.ID)))
+                    CashierWork.Add(tbLogin.Text, tbFIO.Text, tbPassword.Text, db.CinemaSet.Find(((Cinema)cbCinema.SelectedValue).ID));
+                }
+                else
+                {
+                    DialogResult dialogResult = MessageBox.Show("Данные о кассире будут сохранены. Вы уверены, что хотите изменить их?", "Сохранение изменений", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
                     {
-                        MessageBox.Show(" Кассир с таким логином уже существует!");
-                        ok = false;
-                        break;
+                        CashierWork.Change(tbLogin.Text, tbFIO.Text, tbPassword.Text, cashier.ID);
                     }
                 }
-                if (tbLogin.Text=="Admin")
-                {
-                    MessageBox.Show("Пользователь с таким логином уже существует!");
-                    ok = false;
-                }
-                if (ok)
-                {
-                    if (add)
-                    {
-                        Сashier c = new Сashier();
-                        c.FIO = tbFIO.Text;
-                        c.Login = tbLogin.Text;
-                        c.Password = tbPassword.Text;
-                        c.Cinema = db.CinemaSet.Find(((Cinema)(cbCinema.SelectedValue)).ID);
-                        db.СashierSet.Add(c);
-                    }
-                    else
-                    {
-                        DialogResult dialogResult = MessageBox.Show("Данные о кассире будут сохранены. Вы уверены, что хотите изменить их?", "Сохранение изменений", MessageBoxButtons.YesNo);
-                        if (dialogResult == DialogResult.Yes)
-                        {
-                            db.СashierSet.Find(cashier.ID).FIO = tbFIO.Text;
-                            db.СashierSet.Find(cashier.ID).Login = tbLogin.Text;
-                            db.СashierSet.Find(cashier.ID).Password = tbPassword.Text;
-                        }
-                    }
-                    db.SaveChanges();
-                    form.UpdateCashier();
-                    saved = true;
-                    this.Close();
-                }
+                db.SaveChanges();
+                form.UpdateCashier();
+                saved = true;
+                this.Close();
             }
         }
 

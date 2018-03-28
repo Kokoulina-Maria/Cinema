@@ -40,12 +40,12 @@ namespace Cinema
                 this.Text = "Редактирование информации о зале";
                 cbCinema.Visible = false;
                 label1.Visible = false;
-                nudPrice.Value = session.Price;
-                dtpDate.Value = session.Date.Date;
-                cbHall.Text = session.Hall.Num.ToString();
-                cbFilm.Text = session.Film.Name.ToString();
-                nudHour.Value = session.Time.Hour;
-                nudMin.Value = session.Time.Minute;
+                nudPrice.Value = db.SessionSet.Find(session.ID).Price;
+                dtpDate.Value = db.SessionSet.Find(session.ID).Date.Date;
+                cbHall.Text = db.SessionSet.Find(session.ID).Hall.Num.ToString();
+                cbFilm.Text = db.SessionSet.Find(session.ID).Film.Name.ToString();
+                nudHour.Value = db.SessionSet.Find(session.ID).Time.Hour;
+                nudMin.Value = db.SessionSet.Find(session.ID).Time.Minute;
                 cbCinema.Visible = false;
                 label5.Visible = false;
                 btAdd.Text = "Сохранить изменения";
@@ -85,62 +85,23 @@ namespace Cinema
             else
             {
                 DateTime t = new DateTime(dtpDate.Value.Year, dtpDate.Value.Month, dtpDate.Value.Day, (int)nudHour.Value, (int)nudMin.Value, 0);
-                bool ok = true;
-                TimeSpan q = new TimeSpan(5, 0, 0);
-                foreach (Session x in db.SessionSet)
-                {                   
-                    if ((x.Hall == ((Hall)(cbHall.SelectedValue))) && (x.Date == dtpDate.Value) && (x.Time.TimeOfDay<= t.TimeOfDay) && ((x.Time+q).TimeOfDay >= t.TimeOfDay) && ((add) || (!add) && (session.ID != x.ID)))
-                    {
-                        MessageBox.Show("В данном зале в это время уже идет сеанс!");
-                        ok = false;
-                        break;
-                    }
-                    if (t<=DateTime.Now)
-                    {
-                        MessageBox.Show("Вы не можете добавить сеанс, который уже начался!");
-                        ok = false;
-                        break;
-                    }
-                }
-                if (ok)
+                if (add)
                 {
-                    if (add)
-                    {
-                        Session c = new Session();
-                        c.Film=db.FilmSet.Find(((Film)(cbFilm.SelectedValue)).ID);
-                        c.Hall = db.HallSet.Find(((Hall)(cbHall.SelectedValue)).ID);
-                        c.Price =(short)nudPrice.Value;
-                        c.Date = t;
-                        c.Time = t;
-                        db.SessionSet.Add(c);
-                        for (int i=0; i<c.Hall.AmountOfRow; i++)
-                            for (int j=0; j<c.Hall.AmountOfSeats; j++)
-                            {
-                                Seat s = new Seat();
-                                s.Session=db.SessionSet.Find(c.ID);
-                                s.State = "Свободно";
-                                s.NumberOfRow = (byte)(i + 1);
-                                s.NumberOfSeat = (byte)(j + 1);
-                                db.SeatSet.Add(s);
-                            }
-                    }
-                    else
-                    {
-                        DialogResult dialogResult = MessageBox.Show("Данные о сеансе будут сохранены. Вы уверены, что хотите изменить их?", "Сохранение изменений", MessageBoxButtons.YesNo);
-                        if (dialogResult == DialogResult.Yes)
-                        {
-                            db.SessionSet.Find(session.ID).Film= db.FilmSet.Find(((Film)(cbFilm.SelectedValue)).ID);
-                            db.SessionSet.Find(session.ID).Hall= db.HallSet.Find(((Hall)(cbHall.SelectedValue)).ID);
-                            db.SessionSet.Find(session.ID).Price= (short)nudPrice.Value;
-                            db.SessionSet.Find(session.ID).Date= dtpDate.Value;
-                            db.SessionSet.Find(session.ID).Time = t;
-                        }
-                    }
-                    db.SaveChanges();
-                    form.UpdateSession();
-                    saved = true;
-                    this.Close();
+                    SessionWork.Add(db.HallSet.Find(((Hall)(cbHall.SelectedValue)).ID), t, db.FilmSet.Find(((Film)(cbFilm.SelectedValue)).ID), (short)nudPrice.Value);
                 }
+                else
+                {
+                    DialogResult dialogResult = MessageBox.Show("Данные о сеансе будут сохранены. Вы уверены, что хотите изменить их?", "Сохранение изменений", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        SessionWork.Change(db.HallSet.Find(((Hall)(cbHall.SelectedValue)).ID), t, db.FilmSet.Find(((Film)(cbFilm.SelectedValue)).ID), (short)nudPrice.Value, session.ID);
+                    }
+                }
+                db.SaveChanges();
+                form.UpdateSession();
+                saved = true;
+                this.Close();
+
             }
         }
 
