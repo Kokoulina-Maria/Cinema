@@ -96,7 +96,6 @@ namespace Cinema
                 db.SaveChanges();
                 form.UpdateFilms();
                 saved = true;
-                this.Close();
             }
         }
 

@@ -71,7 +71,6 @@ namespace Cinema
                 }
                 form.UpdateHall();
                 saved = true;
-                this.Close();
             }
         }
 

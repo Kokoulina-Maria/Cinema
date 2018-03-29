@@ -138,7 +138,7 @@ namespace Cinema
         private void tbPassword_KeyPress(object sender, KeyPressEventArgs e)
         {
             char number = e.KeyChar;
-            if (!Char.IsDigit(number) && number != 8 && number != 127 && number != 32)
+            if (!Char.IsDigit(number) && number != 8 && number != 127)
                 e.Handled = true;
         }
 
@@ -534,7 +534,8 @@ namespace Cinema
                     form = new AddSession(this, true, null);
                     form.Show();
                 }
-            }          
+            }
+            db = new CinemaModelContainer();
         }
         public void UpdateFilms()
         {
@@ -667,6 +668,7 @@ namespace Cinema
                 {
                     DeleteSessions();
                 }
+                db = new CinemaModelContainer();
             }
         }
 
@@ -827,6 +829,7 @@ namespace Cinema
                 form.Show();
             }
             else MessageBox.Show("Выберите один элемент!");
+            db = new CinemaModelContainer();
         }
 
         private void btSession_Click(object sender, EventArgs e)

@@ -57,7 +57,7 @@ namespace Cinema
 
         private void AddSession_Load(object sender, EventArgs e)
         {         
-            cbCinema.DataSource = (from d in db.CinemaSet where d.Deleted == false select d).ToList();
+            cbCinema.DataSource = (from d in db.CinemaSet where (d.Deleted == false)&&(d.Hall.Count()!=0) select d).ToList();
             cbCinema.DisplayMember = "Name";
             cbCinema.Update();
             cbFilm.DataSource = (from d in db.FilmSet select d).ToList();
@@ -103,7 +103,6 @@ namespace Cinema
                 db.SaveChanges();
                 form.UpdateSession();
                 saved = true;
-                //this.Close();
             }
         }
 
@@ -180,7 +179,7 @@ namespace Cinema
                     bool ok = false;
                     foreach (Cinema x in db.CinemaSet)
                     {
-                        if (x.Name == dataArr[i, 1] as string)
+                        if ((x.Name == dataArr[i, 1] as string) && (!x.Deleted))
                         {
                             ok = true;
                             c = x;
@@ -196,7 +195,7 @@ namespace Cinema
                         ok = false;
                         foreach (Hall x in c.Hall)
                         {
-                            if (x.Num == (byte)Convert.ChangeType(dataArr[i, 2], typeof(byte)))
+                            if ((x.Num == (byte)Convert.ChangeType(dataArr[i, 2], typeof(byte)))&&(!x.Deleted))
                             {
                                 h = x;
                                 ok = true;
@@ -238,14 +237,14 @@ namespace Cinema
                 catch (Exception)
                 {
                     wrong++;
-                    MessageBox.Show("Ошибка при чтении информации, проверьте правильность ввода данных!");
+                    MessageBox.Show("Ошибка при чтении информации о сеансе! Данный сеанс не буде добавлен");
                 }
             }
         }
 
         private void btnFromExcel_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Открываемый файл должен содержать 5 столбцов: Название кинотеатра, Номер зала, Название фильма, Цена, Дата и время в формате: ДД.ММ.ГГГГ ЧЧ:ММ");
+            MessageBox.Show("Открываемый файл должен содержать 5 столбцов: Название кинотеатра, Номер зала, Название фильма, Цена, Дата и время в формате: ДД.ММ.ГГГГ ЧЧ:ММ. Убедитесь, что данные кинотеатр, зал и фильм существуют!");
             AddFromExcel();
             if (dataArr != null)
             {

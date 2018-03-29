@@ -46,7 +46,7 @@ namespace Cinema
         private void tbPassword_KeyPress(object sender, KeyPressEventArgs e)
         {
             char number = e.KeyChar;
-            if (!Char.IsDigit(number) && number != 8 && number != 127 && number != 32)
+            if (!Char.IsDigit(number) && number != 8 && number != 127)
                 e.Handled = true;
         }
 
@@ -81,7 +81,6 @@ namespace Cinema
                 db.SaveChanges();
                 form.UpdateCashier();
                 saved = true;
-                this.Close();
             }
         }
 
@@ -94,6 +93,13 @@ namespace Cinema
                 if (dialogResult == DialogResult.No) e.Cancel = true;
             }
             form.Enabled = true;
+        }
+
+        private void tbLogin_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char number = e.KeyChar;
+            if (number == 32)
+                e.Handled = true;
         }
     }
 }
