@@ -455,7 +455,6 @@ namespace Cinema
             btChange.Enabled = true;
         }
         
-        //Нужно добавить проверку на ввод!
         private void btFind_Click(object sender, EventArgs e)
         {
             bool ok=true;
@@ -497,24 +496,32 @@ namespace Cinema
             if (NowEnt == eEntity.Фильм)
             {
                 form = new AddFilm(this, true, null);
+                form.Show();
             }
             if (NowEnt == eEntity.Кинотеатр)
             {
                 form = new AddCinema(this, true, null);
+                form.Show();
             }
             if (NowEnt == eEntity.Кассир)
             {
                 if (db.CinemaSet.Count() == 0)
                     MessageBox.Show("Вы не можете добавить кассира, так как нет ни одного кинотеатра!");
                 else
+                {
                     form = new AddСashier(this, true, null);
+                    form.Show();
+                }
             }
             if (NowEnt == eEntity.Зал)
             {
                 if (db.CinemaSet.Count() == 0)
                     MessageBox.Show("Вы не можете добавить зал, так как нет ни одного кинотеатра!");
                 else
+                {
                     form = new AddHall(this, true, null);
+                    form.Show();
+                }
             }
             if (NowEnt == eEntity.Сеанс)
             {
@@ -523,9 +530,11 @@ namespace Cinema
                 else if (db.FilmSet.Count() == 0)
                     MessageBox.Show("Вы не можете добавить кассира, так как нет ни одного фильма");
                 else
+                {
                     form = new AddSession(this, true, null);
-            }
-            form.Show();
+                    form.Show();
+                }
+            }          
         }
         public void UpdateFilms()
         {
@@ -735,7 +744,7 @@ namespace Cinema
                     SessionWork.Delete(s.ID, db);
                 }
             db.SaveChanges();
-            UpdateCashier();
+            UpdateSession();
         }
         private void DeleteCashier()
         {
@@ -749,6 +758,7 @@ namespace Cinema
             db.SaveChanges();
             UpdateCashier();
         }
+
         private void dgvList_Click(object sender, EventArgs e)
         {
             Information();
@@ -827,7 +837,11 @@ namespace Cinema
             form = new SessionSeats(this, db.SessionSet.Find(dgvList.SelectedRows[0].Cells[0].Value), cash);
             form.Show();
         }
-
+        /// <summary>
+        /// Выгрузка отчета
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btExel_Click(object sender, EventArgs e)
         {
             SaveFileDialog exel = new SaveFileDialog();
@@ -869,6 +883,13 @@ namespace Cinema
             ReleaseOb(workbook);
             ReleaseOb(app);           
         }
+        /// <summary>
+        /// Выравнивает столбцы
+        /// </summary>
+        /// <param name="sheet"></param>
+        /// <param name="start"></param>
+        /// <param name="rows"></param>
+        /// <param name="col"></param>
         public void Col(Microsoft.Office.Interop.Excel._Worksheet sheet, string start, int rows, int col)
         {
             Excel.Range r = sheet.get_Range(start, System.Reflection.Missing.Value);
@@ -876,6 +897,10 @@ namespace Cinema
             r.Columns.AutoFit();
             ReleaseOb(r);
         }
+        /// <summary>
+        /// сборка мусора
+        /// </summary>
+        /// <param name="ob"></param>
         public void ReleaseOb(object ob)
         {
             try
@@ -892,10 +917,12 @@ namespace Cinema
                 GC.Collect();
             }
 
-        }
+        }    
 
-      
-
+        /// <summary>
+        /// Многопараметрический поиск
+        /// </summary>
+        /// <param name="ok"></param>
         public void Search(bool ok)
         {//функция для многопараметрического поиска
             switch (NowEnt)
@@ -1076,6 +1103,11 @@ namespace Cinema
                 cbEqv.Visible = false;
             }        
         }
+        
+        /// <summary>
+        /// Проверка на ввод даты
+        /// </summary>
+        /// <returns></returns>
         public bool ReadDate()
         {
             bool ok = true;
@@ -1091,6 +1123,10 @@ namespace Cinema
             }
             return ok;
         }
+        /// <summary>
+        /// Проверка на ввод числа
+        /// </summary>
+        /// <returns></returns>
         public bool ReadInt()
         {
             int i = new int();
@@ -1098,6 +1134,10 @@ namespace Cinema
             if (!ok) MessageBox.Show("Неверный ввод!");
             return ok;
         }
+        /// <summary>
+        /// Проверка на ввод времени
+        /// </summary>
+        /// <returns></returns>
         public bool ReadTime()
         {
             bool ok = true;

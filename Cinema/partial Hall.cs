@@ -10,6 +10,14 @@ namespace Cinema
     public partial class HallWork
     {
         static CinemaModelContainer db = new CinemaModelContainer();
+        /// <summary>
+        /// Добавление зала
+        /// </summary>
+        /// <param name="cinema"></param>
+        /// <param name="num"></param>
+        /// <param name="type"></param>
+        /// <param name="rows"></param>
+        /// <param name="seats"></param>
         public static void Add(Cinema cinema, byte num,  string type, byte rows, byte seats)
         {
             if (Check(cinema, num, true, 0))
@@ -24,6 +32,15 @@ namespace Cinema
                 db.SaveChanges();
             }
         }
+        /// <summary>
+        /// Редактирование зала
+        /// </summary>
+        /// <param name="cinema"></param>
+        /// <param name="num"></param>
+        /// <param name="type"></param>
+        /// <param name="rows"></param>
+        /// <param name="seats"></param>
+        /// <param name="ID"></param>
         public static void Change(Cinema cinema, byte num, string type, byte rows, byte seats, int ID)
         {
             if (Check(cinema, num, false, ID))
@@ -39,12 +56,20 @@ namespace Cinema
                 }
             }
         }
+        /// <summary>
+        /// Изменение зала
+        /// </summary>
+        /// <param name="cinema"></param>
+        /// <param name="num"></param>
+        /// <param name="add"></param>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public static bool Check(Cinema cinema, int num, bool add, int ID)
         {
             bool ok = true;
             foreach (Hall x in db.HallSet)
             {
-                if ((x.Cinema == (cinema)) && (x.Num == num) && ((add) || (!add) && (ID != x.ID)))
+                if ((x.Cinema.Name == (cinema.Name)) && (x.Num == num) && ((add) || (!add) && (ID != x.ID)))
                 {
                     MessageBox.Show("В данном кинотеатре уже есть зал с таким номером!");
                     ok = false;
@@ -53,6 +78,10 @@ namespace Cinema
             }
             return ok;
         }
+        /// <summary>
+        /// Удаление зала
+        /// </summary>
+        /// <param name="ID"></param>
         public static void Delete(int ID)
         {
             List<Session> h = (db.HallSet.Find(ID)).Session.ToList();
@@ -63,11 +92,25 @@ namespace Cinema
             db.HallSet.Find(ID).Deleted = true;
             db.SaveChanges();
         }
+        /// <summary>
+        /// Восстановление зала
+        /// </summary>
+        /// <param name="ID"></param>
         public static void Restore(int ID)
         {
             db.HallSet.Find(ID).Deleted = false;
             db.SaveChanges();
         }
+        /// <summary>
+        /// Многопараметрический поиск зала
+        /// </summary>
+        /// <param name="f"></param>
+        /// <param name="ent"></param>
+        /// <param name="atr"></param>
+        /// <param name="sign"></param>
+        /// <param name="eqv"></param>
+        /// <param name="eqv2"></param>
+        /// <returns></returns>
         public static List<Hall> Search(List<Hall> f, string ent, string atr, string sign, string eqv, string eqv2)
         {
             List<Hall> result = new List<Hall>();
@@ -130,36 +173,13 @@ namespace Cinema
                     }
                 case "Кинотеатр":
                     {
-                        switch (atr)
+                        List<Cinema> cin = CinemaWork.Search(db.CinemaSet.ToList(), atr, sign, eqv);
+                        List<Hall> cash = new List<Hall>();
+                        foreach (Cinema x in cin)
                         {
-                            case "Название":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Cinema.Name == eqv select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Cinema.Name != eqv select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Адрес":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Cinema.Adress == eqv select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Cinema.Adress != eqv select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Город":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Cinema.City == eqv select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Cinema.City != eqv select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
+                            cash.AddRange(x.Hall);
                         }
+                        result = (from d in f select d).Intersect(from a in cash select a).ToList();
                         break;
                     }
             }

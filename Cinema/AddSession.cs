@@ -100,8 +100,7 @@ namespace Cinema
                 db.SaveChanges();
                 form.UpdateSession();
                 saved = true;
-                this.Close();
-
+                //this.Close();
             }
         }
 

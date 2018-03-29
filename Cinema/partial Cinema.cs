@@ -10,6 +10,12 @@ namespace Cinema
     public class CinemaWork
     {     
         static CinemaModelContainer db = new CinemaModelContainer();
+        /// <summary>
+        /// Добавление кинотеатра
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="city"></param>
+        /// <param name="adress"></param>
         public static void Add(string name, string city, string adress)
         {
             if (Check(name, city, adress, true, 0))
@@ -18,6 +24,13 @@ namespace Cinema
                 db.SaveChanges();
             }
         }
+        /// <summary>
+        /// Редактирование кинотеатра
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="city"></param>
+        /// <param name="adress"></param>
+        /// <param name="ID"></param>
         public static void Change(string name, string city, string adress, int ID)
         {
             if (Check(name, city, adress, false, ID))
@@ -32,6 +45,15 @@ namespace Cinema
                 }
             }
         }
+        /// <summary>
+        /// Проверка на соответствие БД
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="city"></param>
+        /// <param name="adress"></param>
+        /// <param name="add"></param>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public static bool Check(string name, string city, string adress, bool add, int ID)
         {
             bool ok = true;
@@ -52,6 +74,10 @@ namespace Cinema
             }
             return ok;
         }
+        /// <summary>
+        /// Удаление кинотеатра
+        /// </summary>
+        /// <param name="ID"></param>
         public static void Delete(int ID)
         {          
             List<Hall> h = (db.CinemaSet.Find(ID)).Hall.ToList();
@@ -67,6 +93,10 @@ namespace Cinema
             db.CinemaSet.Find(ID).Deleted = true;
             db.SaveChanges();
         }
+        /// <summary>
+        /// Восстановление кинотеатра
+        /// </summary>
+        /// <param name="ID"></param>
         public static void Restore(int ID)
         {
             foreach (Hall x in (db.CinemaSet.Find(ID)).Hall)
@@ -74,18 +104,27 @@ namespace Cinema
                 HallWork.Restore(x.ID);
             }
             db.CinemaSet.Find((db.CinemaSet.Find(ID)).ID).Deleted = false;
+            db.SaveChanges();
         }
-        public static IEnumerable<Cinema> Search(List<Cinema> f, string atr, string sign, string eqv)
+        /// <summary>
+        /// Многопараметрический поиск кинотеатра
+        /// </summary>
+        /// <param name="f"></param>
+        /// <param name="atr"></param>
+        /// <param name="sign"></param>
+        /// <param name="eqv"></param>
+        /// <returns></returns>
+        public static List<Cinema> Search(List<Cinema> f, string atr, string sign, string eqv)
         {
-            IEnumerable<Cinema> result=null;
+            List<Cinema> result=null;
             switch (atr)
             {
                 case "Название":
                     {
                         switch (sign)
                         {
-                            case "=": { result = (from d in f where d.Name == eqv select d); break; }
-                            case "!=": { result = (from d in f where d.Name != eqv select d); break; }
+                            case "=": { result = (from d in f where d.Name == eqv select d).ToList(); break; }
+                            case "!=": { result = (from d in f where d.Name != eqv select d).ToList(); break; }
                         }
                         break;
                     }
@@ -93,8 +132,8 @@ namespace Cinema
                     {
                         switch (sign)
                         {
-                            case "=": { result = (from d in f where d.Adress == eqv select d); break; }
-                            case "!=": { result = (from d in f where d.Adress != eqv select d); break; }
+                            case "=": { result = (from d in f where d.Adress == eqv select d).ToList(); break; }
+                            case "!=": { result = (from d in f where d.Adress != eqv select d).ToList(); break; }
                         }
                         break;
                     }
@@ -102,8 +141,8 @@ namespace Cinema
                     {
                         switch (sign)
                         {
-                            case "=": { result = (from d in f where d.City == eqv select d); break; }
-                            case "!=": { result = (from d in f where d.City != eqv select d); break; }
+                            case "=": { result = (from d in f where d.City == eqv select d).ToList(); break; }
+                            case "!=": { result = (from d in f where d.City != eqv select d).ToList(); break; }
                         }
                         break;
                     }

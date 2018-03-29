@@ -12,7 +12,7 @@ namespace Cinema
     using System;
     using System.Collections.Generic;
     
-    public partial class Session
+    public partial class Session: IComparable, IEquatable<Session>
     {
         public Session()
         {
@@ -23,7 +23,32 @@ namespace Cinema
         public short Price { get; set; }
         public System.DateTime Time { get; set; }
         public short ID { get; set; }
-    
+
+        public int CompareTo(Object obj)
+        {
+            Session x = obj as Session;
+            if (ID > x.ID) return 1;
+            else if (ID == x.ID) return 0;
+            else return -1;
+        }
+        public bool Equals(Session other)
+        {
+            if (other == null) return false;
+            if (ID == other.ID) return true;
+            else return false;
+        }
+        public override int GetHashCode()
+        {
+            return ID;
+        }
+        public override bool Equals(Object obj)
+        {
+            if (obj == null) return false;
+            Session x = obj as Session;
+            if (x == null) return false;
+            else return Equals(x);
+        }
+
         public virtual Film Film { get; set; }
         public virtual ICollection<Seat> Seat { get; set; }
         public virtual Hall Hall { get; set; }

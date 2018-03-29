@@ -9,6 +9,13 @@ namespace Cinema
 {
     public class SeatWork
     {       
+        /// <summary>
+        /// Добавление места
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        /// <param name="DB"></param>
         public static void Add(int ID, byte i, byte j, CinemaModelContainer DB)
         {
             Seat s = new Seat();
@@ -18,6 +25,11 @@ namespace Cinema
             s.NumberOfSeat = j;
             DB.SeatSet.Add(s);
         }
+        /// <summary>
+        /// Удаление места
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <param name="DB"></param>
         public static void Delete(Int64 ID, CinemaModelContainer DB)
         {
             //удаляем все места данного сеанса

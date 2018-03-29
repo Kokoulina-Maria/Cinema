@@ -12,10 +12,35 @@ namespace Cinema
     using System;
     using System.Collections.Generic;
     
-    public partial class Ticket
+    public partial class Ticket: IComparable, IEquatable<Ticket>
     {
         public long Number { get; set; }
-    
+
+        public int CompareTo(Object obj)
+        {
+            Ticket x = obj as Ticket;
+            if (Number > x.Number) return 1;
+            else if (Number == x.Number) return 0;
+            else return -1;
+        }
+        public bool Equals(Ticket other)
+        {
+            if (other == null) return false;
+            if (Number == other.Number) return true;
+            else return false;
+        }
+        public override int GetHashCode()
+        {
+            return (int)Number;
+        }
+        public override bool Equals(Object obj)
+        {
+            if (obj == null) return false;
+            Ticket x = obj as Ticket;
+            if (x == null) return false;
+            else return Equals(x);
+        }
+
         public virtual Seat Seat { get; set; }
     }
 }

@@ -8,206 +8,22 @@ namespace Cinema
 {
     public class BookingWork
     {
+        static CinemaModelContainer db = new CinemaModelContainer();
+        /// <summary>
+        /// Многопараметрический поиск брони
+        /// </summary>
+        /// <param name="f"></param>
+        /// <param name="ent"></param>
+        /// <param name="atr"></param>
+        /// <param name="sign"></param>
+        /// <param name="eqv"></param>
+        /// <param name="eqv2"></param>
+        /// <returns></returns>
         public static List<Booking> Find(List<Booking> f, string ent, string atr, string sign, string eqv, string eqv2)
         {
             List<Booking> result = new List<Booking>();
             switch (ent)
-            {
-                case "Зал":
-                    {
-                        switch (atr)
-                        {
-                            case "Номер":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Seat.Session.Hall.Num == int.Parse(eqv) select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Seat.Session.Hall.Num != int.Parse(eqv) select d).ToList(); break; }
-                                        case ">": { result = (from d in f where d.Seat.Session.Hall.Num > int.Parse(eqv) select d).ToList(); break; }
-                                        case "<": { result = (from d in f where d.Seat.Session.Hall.Num < int.Parse(eqv) select d).ToList(); break; }
-                                        case ">=": { result = (from d in f where d.Seat.Session.Hall.Num >= int.Parse(eqv) select d).ToList(); break; }
-                                        case "<=": { result = (from d in f where d.Seat.Session.Hall.Num <= int.Parse(eqv) select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Тип":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Seat.Session.Hall.Type == eqv2 select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Seat.Session.Hall.Type != eqv2 select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Количество рядов":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Seat.Session.Hall.AmountOfRow == int.Parse(eqv) select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Seat.Session.Hall.AmountOfRow != int.Parse(eqv) select d).ToList(); break; }
-                                        case ">": { result = (from d in f where d.Seat.Session.Hall.AmountOfRow > int.Parse(eqv) select d).ToList(); break; }
-                                        case "<": { result = (from d in f where d.Seat.Session.Hall.AmountOfRow < int.Parse(eqv) select d).ToList(); break; }
-                                        case ">=": { result = (from d in f where d.Seat.Session.Hall.AmountOfRow >= int.Parse(eqv) select d).ToList(); break; }
-                                        case "<=": { result = (from d in f where d.Seat.Session.Hall.AmountOfRow <= int.Parse(eqv) select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Количество мест в ряду":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Seat.Session.Hall.AmountOfSeats == int.Parse(eqv) select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Seat.Session.Hall.AmountOfSeats != int.Parse(eqv) select d).ToList(); break; }
-                                        case ">": { result = (from d in f where d.Seat.Session.Hall.AmountOfSeats > int.Parse(eqv) select d).ToList(); break; }
-                                        case "<": { result = (from d in f where d.Seat.Session.Hall.AmountOfSeats < int.Parse(eqv) select d).ToList(); break; }
-                                        case ">=": { result = (from d in f where d.Seat.Session.Hall.AmountOfSeats >= int.Parse(eqv) select d).ToList(); break; }
-                                        case "<=": { result = (from d in f where d.Seat.Session.Hall.AmountOfSeats <= int.Parse(eqv) select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                        }
-                        break;
-                    }
-                case "Кинотеатр":
-                    {
-                        switch (atr)
-                        {
-                            case "Название":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Seat.Session.Hall.Cinema.Name == eqv select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Seat.Session.Hall.Cinema.Name != eqv select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Адрес":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Seat.Session.Hall.Cinema.Adress == eqv select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Seat.Session.Hall.Cinema.Adress != eqv select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Город":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Seat.Session.Hall.Cinema.City == eqv select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Seat.Session.Hall.Cinema.City != eqv select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                        }
-                        break;
-                    }
-                case "Фильм":
-                    {
-                        switch (atr)
-                        {
-                            case "Название":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Seat.Session.Film.Name == eqv select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Seat.Session.Film.Name != eqv select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Год":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Seat.Session.Film.Year == int.Parse(eqv) select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Seat.Session.Film.Year != int.Parse(eqv) select d).ToList(); break; }
-                                        case ">": { result = (from d in f where d.Seat.Session.Film.Year > int.Parse(eqv) select d).ToList(); break; }
-                                        case "<": { result = (from d in f where d.Seat.Session.Film.Year < int.Parse(eqv) select d).ToList(); break; }
-                                        case ">=": { result = (from d in f where d.Seat.Session.Film.Year >= int.Parse(eqv) select d).ToList(); break; }
-                                        case "<=": { result = (from d in f where d.Seat.Session.Film.Year <= int.Parse(eqv) select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Длительность":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Seat.Session.Film.length == TimeSpan.Parse(eqv) select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Seat.Session.Film.length != TimeSpan.Parse(eqv) select d).ToList(); break; }
-                                        case ">": { result = (from d in f where d.Seat.Session.Film.length > TimeSpan.Parse(eqv) select d).ToList(); break; }
-                                        case "<": { result = (from d in f where d.Seat.Session.Film.length < TimeSpan.Parse(eqv) select d).ToList(); break; }
-                                        case ">=": { result = (from d in f where d.Seat.Session.Film.length >= TimeSpan.Parse(eqv) select d).ToList(); break; }
-                                        case "<=": { result = (from d in f where d.Seat.Session.Film.length <= TimeSpan.Parse(eqv) select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Возрастное ограничение":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Seat.Session.Film.AgeLimit == eqv2 select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Seat.Session.Film.AgeLimit != eqv2 select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Продюссер":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Seat.Session.Film.Producer == eqv select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Seat.Session.Film.Producer != eqv select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                        }
-                        break;
-                    }
-                case "Сеанс":
-                    {
-                        switch (atr)
-                        {
-                            case "Дата":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Seat.Session.Time.Date == DateTime.Parse(eqv).Date select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Seat.Session.Time.Date != DateTime.Parse(eqv).Date select d).ToList(); break; }
-                                        case ">": { result = (from d in f where d.Seat.Session.Time.Date > DateTime.Parse(eqv).Date select d).ToList(); break; }
-                                        case "<": { result = (from d in f where d.Seat.Session.Time.Date < DateTime.Parse(eqv).Date select d).ToList(); break; }
-                                        case ">=": { result = (from d in f where d.Seat.Session.Time.Date >= DateTime.Parse(eqv).Date select d).ToList(); break; }
-                                        case "<=": { result = (from d in f where d.Seat.Session.Time.Date <= DateTime.Parse(eqv).Date select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Цена":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Seat.Session.Price == int.Parse(eqv) select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Seat.Session.Price != int.Parse(eqv) select d).ToList(); break; }
-                                        case ">": { result = (from d in f where d.Seat.Session.Price > int.Parse(eqv) select d).ToList(); break; }
-                                        case "<": { result = (from d in f where d.Seat.Session.Price < int.Parse(eqv) select d).ToList(); break; }
-                                        case ">=": { result = (from d in f where d.Seat.Session.Price >= int.Parse(eqv) select d).ToList(); break; }
-                                        case "<=": { result = (from d in f where d.Seat.Session.Price <= int.Parse(eqv) select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Время":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Seat.Session.Time.TimeOfDay == TimeSpan.Parse(eqv) select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Seat.Session.Time.TimeOfDay != TimeSpan.Parse(eqv) select d).ToList(); break; }
-                                        case ">": { result = (from d in f where d.Seat.Session.Time.TimeOfDay > TimeSpan.Parse(eqv) select d).ToList(); break; }
-                                        case "<": { result = (from d in f where d.Seat.Session.Time.TimeOfDay < TimeSpan.Parse(eqv) select d).ToList(); break; }
-                                        case ">=": { result = (from d in f where d.Seat.Session.Time.TimeOfDay >= TimeSpan.Parse(eqv) select d).ToList(); break; }
-                                        case "<=": { result = (from d in f where d.Seat.Session.Time.TimeOfDay <= TimeSpan.Parse(eqv) select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                        }
-                        break;
-                    }
+            {                
                 case "Место":
                     {
                         switch (atr)
@@ -252,6 +68,19 @@ namespace Cinema
                             case ">=": { result = (from d in f where d.Number >= int.Parse(eqv) select d).ToList(); break; }
                             case "<=": { result = (from d in f where d.Number <= int.Parse(eqv) select d).ToList(); break; }
                         }
+                        break;
+                    }
+                default:
+                    {
+                        List<Session> cin = SessionWork.Find(db.SessionSet.ToList(), ent, atr, sign, eqv, eqv2);
+                        List<Booking> cash = new List<Booking>();
+                        foreach (Session x in cin)
+                        {
+                            foreach (Seat y in x.Seat)
+                                if (y.Booking != null)
+                                    cash.Add(y.Booking);
+                        }
+                        result = (from d in f select d).Intersect(from a in cash select a).ToList();
                         break;
                     }
             }

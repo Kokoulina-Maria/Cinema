@@ -12,7 +12,7 @@ namespace Cinema
     using System;
     using System.Collections.Generic;
     
-    public partial class Hall
+    public partial class Hall: IComparable, IEquatable<Hall>
     {
         public Hall()
         {
@@ -25,7 +25,31 @@ namespace Cinema
         public byte AmountOfSeats { get; set; }
         public bool Deleted { get; set; }
         public short ID { get; set; }
-    
+        public int CompareTo(Object obj)
+        {
+            Hall x = obj as Hall;
+            if (ID > x.ID) return 1;
+            else if (ID == x.ID) return 0;
+            else return -1;
+        }
+        public bool Equals(Hall other)
+        {
+            if (other == null) return false;
+            if (ID == other.ID) return true;
+            else return false;
+        }
+        public override int GetHashCode()
+        {
+            return ID;
+        }
+        public override bool Equals(Object obj)
+        {
+            if (obj == null) return false;
+            Hall x = obj as Hall;
+            if (x == null) return false;
+            else return Equals(x);
+        }
+
         public virtual Cinema Cinema { get; set; }
         public virtual ICollection<Session> Session { get; set; }
     }

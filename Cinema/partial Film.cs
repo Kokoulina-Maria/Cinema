@@ -10,6 +10,16 @@ namespace Cinema
     public class FilmWork
     {
         static CinemaModelContainer db = new CinemaModelContainer();
+        /// <summary>
+        /// Добавление фильма
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="age"></param>
+        /// <param name="descrip"></param>
+        /// <param name="time"></param>
+        /// <param name="producer"></param>
+        /// <param name="year"></param>
+        /// <param name="poster"></param>
         public static void Add(string name, string age, string descrip, TimeSpan time, string producer, short year, string poster)
         {
             if (Check(name, true, 0))
@@ -18,6 +28,17 @@ namespace Cinema
                 db.SaveChanges();
             }
         }
+        /// <summary>
+        /// Редактирование фильма
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="ID"></param>
+        /// <param name="age"></param>
+        /// <param name="descrip"></param>
+        /// <param name="time"></param>
+        /// <param name="producer"></param>
+        /// <param name="year"></param>
+        /// <param name="poster"></param>
         public static void Change(string name, int ID, string age, string descrip, TimeSpan time, string producer, short year, string poster)
         {
             if (Check(name, false, ID))
@@ -33,6 +54,13 @@ namespace Cinema
                 db.SaveChanges();
             }
         }
+        /// <summary>
+        /// Проверкана соответствие БД
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="add"></param>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public static bool Check(string name, bool add, int ID)
         {
             bool ok = true;
@@ -47,6 +75,10 @@ namespace Cinema
             }
             return ok;
         }
+        /// <summary>
+        /// Удаление фильма
+        /// </summary>
+        /// <param name="ID"></param>
         public static void Delete(int ID)
         {
             Film s = db.FilmSet.Find(ID);
@@ -58,6 +90,15 @@ namespace Cinema
             db.FilmSet.Remove(s);
             db.SaveChanges();
         }
+        /// <summary>
+        /// Многопараметрический поиск фильма
+        /// </summary>
+        /// <param name="f"></param>
+        /// <param name="atr"></param>
+        /// <param name="sign"></param>
+        /// <param name="eqv"></param>
+        /// <param name="eqv2"></param>
+        /// <returns></returns>
         public static List<Film> Find(List<Film> f, string atr, string sign, string eqv, string eqv2)
         {
             List<Film> result = new List<Film>();

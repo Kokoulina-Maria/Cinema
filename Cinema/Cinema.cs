@@ -12,7 +12,7 @@ namespace Cinema
     using System;
     using System.Collections.Generic;
     
-    public partial class Cinema
+    public partial class Cinema: IComparable, IEquatable<Cinema>
     {
         public Cinema()
         {
@@ -25,7 +25,21 @@ namespace Cinema
         public string City { get; set; }
         public bool Deleted { get; set; }
         public short ID { get; set; }
-    
+
+        public int CompareTo(Object obj)
+        {
+            Cinema x = obj as Cinema;
+            if (ID > x.ID) return 1;
+            else if (ID == x.ID) return 0;
+            else return -1;
+        }
+        public bool Equals(Cinema other)
+        {
+            if (other == null) return false;
+            if (ID == other.ID) return true;
+            else return false;
+        }
+
         public virtual ICollection<Hall> Hall { get; set; }
         public virtual ICollection<Сashier> Сashier { get; set; }
     }

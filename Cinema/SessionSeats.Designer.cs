@@ -77,6 +77,7 @@
             0,
             0,
             0});
+            this.nudRow.ValueChanged += new System.EventHandler(this.nudRow_ValueChanged);
             // 
             // label2
             // 
@@ -103,6 +104,7 @@
             0,
             0,
             0});
+            this.nudSeat.ValueChanged += new System.EventHandler(this.nudSeat_ValueChanged);
             // 
             // btBuy
             // 

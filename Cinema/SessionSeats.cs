@@ -94,9 +94,9 @@ namespace Cinema
                         {
                             a.Add(d);
                             break;
-                        }
-                    if (choose.Contains(a[0])) DrawSeat(i, j, new SolidBrush(Color.Blue));
+                        }                    
                     if (a[0].State == "Свободно") DrawSeat(i, j, new SolidBrush(Color.Green));
+                    if (choose.Contains(a[0])) DrawSeat(i, j, new SolidBrush(Color.Blue));
                     if (a[0].State == "Занято") DrawSeat(i, j, new SolidBrush(Color.Red));
                     if (a[0].State=="Забронировано") DrawSeat(i, j, new SolidBrush(Color.Yellow));                   
                 }
@@ -255,12 +255,25 @@ namespace Cinema
                 db.SeatSet.Find(d.ID).State = "Свободно";                
             }
             db.SaveChanges();
+            choose.Clear();
             UploadPicture();
         }
 
         private void SessionSeats_FormClosing(object sender, FormClosingEventArgs e)
         {
             form.Enabled = true;
+        }
+
+        private void nudRow_ValueChanged(object sender, EventArgs e)
+        {
+            UploadPicture();
+            DrawSeat((int)nudRow.Value, (int)nudSeat.Value, new SolidBrush(Color.Pink));
+        }
+
+        private void nudSeat_ValueChanged(object sender, EventArgs e)
+        {
+            UploadPicture();
+            DrawSeat((int)nudRow.Value, (int)nudSeat.Value, new SolidBrush(Color.Pink));
         }
     }
 }

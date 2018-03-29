@@ -170,7 +170,7 @@
             // 
             this.nudHour.Location = new System.Drawing.Point(118, 183);
             this.nudHour.Maximum = new decimal(new int[] {
-            4,
+            3,
             0,
             0,
             0});

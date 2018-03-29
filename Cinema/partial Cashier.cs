@@ -10,6 +10,13 @@ namespace Cinema
     public class CashierWork
     {
         static CinemaModelContainer db = new CinemaModelContainer();
+        /// <summary>
+        /// Добавление кассира
+        /// </summary>
+        /// <param name="login"></param>
+        /// <param name="FIO"></param>
+        /// <param name="password"></param>
+        /// <param name="cinema"></param>
         public static void Add(string login, string FIO, string password, Cinema cinema)
         {
             if (Cheack(login, true, 0))
@@ -23,6 +30,13 @@ namespace Cinema
                 db.SaveChanges();
             }
         }
+        /// <summary>
+        /// Изменение кассира
+        /// </summary>
+        /// <param name="login"></param>
+        /// <param name="FIO"></param>
+        /// <param name="password"></param>
+        /// <param name="ID"></param>
         public static void Change(string login, string FIO, string password, int ID)
         {
             if (Cheack(login, false,ID))
@@ -33,7 +47,13 @@ namespace Cinema
                 db.SaveChanges();
             }
         }
-
+        /// <summary>
+        /// Проверка на несоответствие данным в БД
+        /// </summary>
+        /// <param name="login"></param>
+        /// <param name="add"></param>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public static bool Cheack(string login, bool add, int ID)
         {
             bool ok = true;
@@ -53,7 +73,15 @@ namespace Cinema
             }
             return ok;
         }
-
+        /// <summary>
+        /// Многопараметрический поиск кассира
+        /// </summary>
+        /// <param name="f"></param>
+        /// <param name="ent"></param>
+        /// <param name="atr"></param>
+        /// <param name="sign"></param>
+        /// <param name="eqv"></param>
+        /// <returns></returns>
         public static List<Сashier> Find(List<Сashier> f, string ent, string atr, string sign, string eqv)
         {
             List<Сashier> result = new List<Сashier>();
@@ -86,36 +114,13 @@ namespace Cinema
                     }
                 case "Кинотеатр":
                     {
-                        switch (atr)
+                        List<Cinema> cin = CinemaWork.Search(db.CinemaSet.ToList(), atr, sign, eqv);
+                        List<Сashier> cash = new List<Сashier>();
+                        foreach (Cinema x in cin)
                         {
-                            case "Название":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Cinema.Name == eqv select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Cinema.Name != eqv select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Адрес":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Cinema.Adress == eqv select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Cinema.Adress != eqv select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
-                            case "Город":
-                                {
-                                    switch (sign)
-                                    {
-                                        case "=": { result = (from d in f where d.Cinema.City == eqv select d).ToList(); break; }
-                                        case "!=": { result = (from d in f where d.Cinema.City != eqv select d).ToList(); break; }
-                                    }
-                                    break;
-                                }
+                            cash.AddRange(x.Сashier);
                         }
+                        result=(from d in f select d).Intersect(from a in cash select a).ToList();
                         break;
                     }
             }
