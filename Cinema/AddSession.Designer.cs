@@ -45,6 +45,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.nudMin = new System.Windows.Forms.NumericUpDown();
             this.nudHour = new System.Windows.Forms.NumericUpDown();
+            this.btnFromExcel = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudPrice)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudHour)).BeginInit();
@@ -235,12 +236,23 @@
             0,
             0});
             // 
+            // btnFromExcel
+            // 
+            this.btnFromExcel.Location = new System.Drawing.Point(362, 12);
+            this.btnFromExcel.Name = "btnFromExcel";
+            this.btnFromExcel.Size = new System.Drawing.Size(130, 43);
+            this.btnFromExcel.TabIndex = 82;
+            this.btnFromExcel.Text = "Загрузить сеансы из Excel";
+            this.btnFromExcel.UseVisualStyleBackColor = true;
+            this.btnFromExcel.Click += new System.EventHandler(this.btnFromExcel_Click);
+            // 
             // AddSession
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.ClientSize = new System.Drawing.Size(496, 242);
+            this.Controls.Add(this.btnFromExcel);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.nudMin);
@@ -289,5 +301,6 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.NumericUpDown nudMin;
         private System.Windows.Forms.NumericUpDown nudHour;
+        private System.Windows.Forms.Button btnFromExcel;
     }
 }

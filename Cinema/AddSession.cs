@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Cinema
 {
@@ -17,6 +18,8 @@ namespace Cinema
         public bool add;
         public Session session;
         Form1 form;
+        public object[,] dataArr;
+        public int iLastRow;
         public AddSession(Form1 forma, bool add, Session x)
         {
             InitializeComponent();
@@ -118,6 +121,139 @@ namespace Cinema
         private void cbCinema_SelectedValueChanged(object sender, EventArgs e)
         {
             Info();
+        }
+        
+        public void AddFromExcel()
+        {
+            //поиск файла Excel 
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Multiselect = false;
+            ofd.DefaultExt = "*.xls;*.xlsx";
+            ofd.Filter = "Microsoft Excel (*.xls*)|*.xls*";
+            ofd.Title = "Выберите документ";
+            if (ofd.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+            string xlFileName = ofd.FileName; //имя нашего Excel файла 
+
+            //работа с Excel 
+            Excel.Range Rng;
+            Excel.Workbook xlWB;
+            Excel.Worksheet xlSht;
+
+            Excel.Application xlApp = new Excel.Application(); //создаём приложение Excel 
+            xlWB = xlApp.Workbooks.Open(xlFileName); //открываем наш файл 
+            xlSht = xlWB.Worksheets["Лист1"];
+
+            iLastRow = xlSht.Cells[xlSht.Rows.Count, "A"].End[Excel.XlDirection.xlUp].Row; //последняя заполненная строка в столбце А 
+
+            Rng = (Excel.Range)xlSht.Range["A1", xlSht.Cells[iLastRow, 5]]; //пример записи диапазона ячеек в переменную Rng
+
+            try
+            {
+                dataArr = (object[,])Rng.Value; //чтение данных из ячеек в массив 
+            }
+            catch
+            {
+                MessageBox.Show("Ошибка при чтении файла. Убедитесь, что заполнили все 6 полей: Название кинотетра, номер зала, название фильма, стоимость, дата, время ");
+            }
+
+            //закрытие Excel 
+            xlWB.Close(true); //сохраняем и закрываем файл 
+            xlApp.Quit();
+            form.ReleaseOb(xlSht);
+            form.ReleaseOb(xlWB);
+            form.ReleaseOb(xlApp);
+            form.ReleaseOb(Rng);
+        }
+        public void AddFromArr()
+        {
+            Cinema c = null;
+            Hall h = null;
+            Film f = null;
+            int wrong = 0;
+            for (int i = 1; i <= iLastRow; i++)
+            {
+                try
+                {
+                    bool ok = false;
+                    foreach (Cinema x in db.CinemaSet)
+                    {
+                        if (x.Name == dataArr[i, 1] as string)
+                        {
+                            ok = true;
+                            c = x;
+                            break;
+                        }
+                    }
+                    if (!ok)
+                    {
+                        wrong++;
+                    }
+                    else
+                    {
+                        ok = false;
+                        foreach (Hall x in c.Hall)
+                        {
+                            if (x.Num == (byte)Convert.ChangeType(dataArr[i, 2], typeof(byte)))
+                            {
+                                h = x;
+                                ok = true;
+                                break;
+                            }
+                        }
+                        if (!ok)
+                        {
+                            wrong++;
+                            break;
+                        }
+                        else
+                        {
+                            ok = false;
+                            foreach (Film x in db.FilmSet)
+                            {
+                                if (x.Name == dataArr[i, 3] as string)
+                                {
+                                    f = x;
+                                    ok = true;
+                                    break;
+                                }
+                            }
+                            if (!ok)
+                            {
+                                wrong++;
+                                break;
+                            }
+                            else
+                            {
+                                short p = (short)Convert.ChangeType(dataArr[i, 4], typeof(short));
+                                DateTime t = new DateTime();
+                                t = (DateTime)Convert.ChangeType(dataArr[i, 5], typeof(DateTime));
+                                SessionWork.Add(h, t, f, p);
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    wrong++;
+                    MessageBox.Show("Ошибка при чтении информации, проверьте правильность ввода данных!");
+                }
+            }
+        }
+
+        private void btnFromExcel_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Открываемый файл должен содержать 5 столбцов: Название кинотеатра, Номер зала, Название фильма, Цена, Дата и время в формате: ДД.ММ.ГГГГ ЧЧ:ММ");
+            AddFromExcel();
+            if (dataArr != null)
+            {
+                AddFromArr();
+                form.UpdateSession();
+                saved = true;
+                this.Close();
+            }
         }
     }
 }
